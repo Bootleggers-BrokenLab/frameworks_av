@@ -385,6 +385,13 @@ DeviceVector Engine::getDevicesForStrategyInt(legacy_strategy strategy,
     // FIXME: STRATEGY_REROUTING follow STRATEGY_MEDIA for now
     case STRATEGY_REROUTING:
     case STRATEGY_MEDIA: {
+        if (isInCall() && devices.isEmpty()) {
+            // when in call, get the device for Phone strategy
+            devices = getDevicesForStrategyInt(
+                    STRATEGY_PHONE, availableOutputDevices, availableInputDevices, outputs);
+            break;
+        }
+
         DeviceVector devices2;
         if (strategy != STRATEGY_SONIFICATION) {
             // no sonification on remote submix (e.g. WFD)
