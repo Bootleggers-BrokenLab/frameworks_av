@@ -18,7 +18,7 @@ cc_binary {
     srcs: ["main_cameraserver.cpp"],
 
     shared_libs: [
-        "libcameraservice",
+        "//frameworks/av/services/camera/libcameraservice:libcameraservice",
         "liblog",
         "libutils",
         "libui",
