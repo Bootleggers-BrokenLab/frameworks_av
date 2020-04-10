@@ -24,6 +24,10 @@
 #include <cstring>
 #include <ctime>
 #include <string>
+#ifdef TARGET_NEEDS_CLIENT_INFO
+#include <iostream>
+#include <fstream>
+#endif
 #include <sys/types.h>
 #include <inttypes.h>
 #include <pthread.h>
@@ -1326,7 +1330,6 @@ Status CameraService::connect(
                 ret.toString8());
         return ret;
     }
-
     *device = client;
     return ret;
 }
@@ -2537,6 +2540,11 @@ status_t CameraService::BasicClient::startCameraOps() {
 
     sCameraService->mUidPolicy->registerMonitorUid(mClientUid);
 
+#ifdef TARGET_NEEDS_CLIENT_INFO
+    std::ofstream cpf("/data/misc/aosp/client_package_name");
+    std::string cpn = String8(mClientPackageName).string();
+    cpf << cpn;
+#endif
     return OK;
 }
 
@@ -3334,8 +3342,15 @@ void CameraService::updateStatus(StatusInternal status, const String8& cameraId,
             Mutex::Autolock lock(mStatusListenerLock);
 
             for (auto& listener : mListenerList) {
-                if (!listener.first &&  (isHidden || !supportsHAL3)) {
-                    ALOGV("Skipping camera discovery callback for system-only / HAL1 camera %s",
+                bool isVendorListener = listener.first;
+                if (isVendorListener && !supportsHAL3) {
+                    ALOGV("Skipping vendor listener camera discovery callback for  HAL1 camera %s",
+                            cameraId.c_str());
+                    continue;
+                }
+
+                if (!isVendorListener && isHidden) {
+                    ALOGV("Skipping camera discovery callback for system-only camera %s",
                           cameraId.c_str());
                     continue;
                 }
