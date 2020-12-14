@@ -23,6 +23,9 @@ cc_library_headers {
     vendor_available: true,
     host_supported: true,
     min_sdk_version: "29",
+    header_abi_checker: {
+        enabled: false,
+    },
     apex_available: [
         "//apex_available:platform",
         "com.android.media",
