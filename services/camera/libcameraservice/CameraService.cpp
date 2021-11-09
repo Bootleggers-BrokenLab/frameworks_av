@@ -145,6 +145,9 @@ static const String16 sCameraOpenCloseListenerPermission(
 static const String16
         sCameraInjectExternalCameraPermission("android.permission.CAMERA_INJECT_EXTERNAL_CAMERA");
 const char *sFileName = "lastOpenSessionDumpFile";
+#ifdef CAMERA_NEEDS_CLIENT_INFO_LIB
+static const sp<IOnePlusCameraProvider> gVendorCameraProviderService = IOnePlusCameraProvider::getService();
+#endif
 static constexpr int32_t kSystemNativeClientScore = resource_policy::PERCEPTIBLE_APP_ADJ;
 static constexpr int32_t kSystemNativeClientState =
         ActivityManager::PROCESS_STATE_PERSISTENT_UI;
@@ -3578,6 +3581,7 @@ status_t CameraService::BasicClient::startCameraOps() {
 #ifdef CAMERA_NEEDS_CLIENT_INFO_LIB
     gVendorCameraProviderService->setPackageName(String8(mClientPackageName).string());
 #endif
+
     return OK;
 }
 
