@@ -614,8 +614,7 @@ Status AudioPolicyService::getInputForAttr(const media::AudioAttributesInternal&
     // type is API_INPUT_MIX_EXT_POLICY_REROUTE and by AudioService if a media projection
     // is used and input type is API_INPUT_MIX_PUBLIC_CAPTURE_PLAYBACK
     // - ECHO_REFERENCE source is controlled by captureAudioOutputAllowed()
-    if (!isAudioServerOrMediaServerUid(attributionSource.uid)
-            && !(recordingAllowed(attributionSource, inputSource)
+    if (!(recordingAllowed(attributionSource, inputSource)
             || inputSource == AUDIO_SOURCE_FM_TUNER
             || inputSource == AUDIO_SOURCE_REMOTE_SUBMIX
             || inputSource == AUDIO_SOURCE_ECHO_REFERENCE)) {
